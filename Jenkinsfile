@@ -18,5 +18,11 @@ pipeline {
                 bat 'dotnet test'
             }
         }
+
+        stage('Clear Debug Project'){
+            steps {
+                bat 'dotnet clean --configuration Debug'
+            }
+        }
     }
 }
