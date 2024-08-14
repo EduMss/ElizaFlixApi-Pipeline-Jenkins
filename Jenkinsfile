@@ -7,6 +7,12 @@ pipeline {
             }
         }
 
+        stage('Clear Project'){
+            steps {
+                bat 'dotnet clear'
+            }
+        }
+
         stage('Build') {
             steps {
                 bat 'dotnet build'
