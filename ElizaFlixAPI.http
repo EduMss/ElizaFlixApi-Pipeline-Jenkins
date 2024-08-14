@@ -1,0 +1,6 @@
+@ElizaFlixAPI_HostAddress = http://192.168.0.249:3001
+
+GET {{ElizaFlixAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

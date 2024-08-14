@@ -1,0 +1,73 @@
+name: Execução de Testes
+
+on:
+    workflow_call:
+
+jobs:
+    unit-test:
+        name: Teste de Unidade
+        runs-on: ubuntu-latest
+        steps:
+            - name: Obtendo o código do projeto
+              uses: actions/checkout@v4
+            - name: Setup dotnet
+              uses: actions/setup-dotnet@v4
+              with:
+                dotnet-version: "8.0.300"
+            - name: Execução do Teste de Unidade
+              working-directory: ./
+              run: dotnet test ./ElizaFlixAPI.csproj
+
+    integration-test:
+        name: Teste de Integração
+        runs-on: ubuntu-latest
+        services:
+            postgres:
+                image: postgres:latest
+                ports:
+                    - 5432:5432
+                env:
+                    POSTGRES_USER: postgres
+                    POSTGRES_PASSWORD: postgres
+                    POSTGRES_DB: elizaflix
+
+        steps:
+            - name: Obtendo o código do projeto
+              uses: actions/checkout@v4
+
+            - name: Setup dotnet
+              uses: actions/setup-dotnet@v4
+              with:
+                dotnet-version: "8.0.300"
+
+            - name: Executar testes de Integração
+              working-directory: ./
+              run: dotnet test ./ElizaFlixAPI.csproj
+
+    sonarqube:
+        name: Scan com o SonarQube
+        runs-on: ubuntu-latest
+        steps:
+            - name: Obtendo o código do projeto
+              uses: actions/checkout@v4
+
+            - name: Setup JDK
+              uses: actions/setup-java@v4
+              with:
+                distribution: adopt
+                java-version: '21'
+            
+            - name: Setup dotnet
+              uses: actions/setup-dotnet@v4
+              with:
+                dotnet-version: "8.0.300"
+            
+            - name: Instalação do SonarQube Scanner
+              run: dotnet tool install --global dotnet-sonarscanner
+
+            - name: Build e analise
+              working-directory: ./
+              run: |
+                dotnet sonarscanner begin /k:"ElizaFlixAPI" /d:sonar.host.url="${{vars.SONARQUBE_URL}}"  /d:sonar.login="${{vars.SONARQUBE_KEY}}"
+                dotnet build ./ElizaFlixAPI.sln
+                dotnet sonarscanner end /d:sonar.login="${{vars.SONARQUBE_KEY}}"

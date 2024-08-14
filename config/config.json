@@ -1,0 +1,11 @@
+{
+    "sistema_operacional":"Linux",
+    "ip_banco":"localhost",
+    "porta_banco":"5432",
+    "databasse":"elizaflix",
+    "user":"postgres",
+    "password":"postgres",
+    "dir_filesVideos":"./dp/filmes/",
+    "dir_filesSeries":"./dp/series/",
+    "dir_filesThumb":"./dp/ThumbFilmes/"
+}
