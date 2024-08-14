@@ -15,7 +15,7 @@ pipeline {
 
         stage('Teste') {
             steps {
-                bat 'dotnet teste ElizaFlixAPI.csproj'
+                bat 'dotnet test'
             }
         }
     }
