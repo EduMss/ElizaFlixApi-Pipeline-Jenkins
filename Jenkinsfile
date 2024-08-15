@@ -22,7 +22,7 @@ pipeline {
         stage('Clear Debug Project'){
             steps {
                 bat 'dotnet clean --configuration Debug'
-                bat 'rd /s /q bin\\Debug'
+                // bat 'rd /s /q bin\\Debug'
             }
         }
 
@@ -37,7 +37,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Build Image') {
             steps {
                 script {
