@@ -6,7 +6,7 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: 'https://github.com/EduMss/ElizaFlixApi-Pipeline-Jenkins.git']]])
             }
         }
-        
+
         // stage('Build') {
         //     steps {
         //         bat 'dotnet build --configuration Release'
@@ -43,6 +43,7 @@ pipeline {
                         '''
                         def app = docker.build("edumss/elizaflixapi")
                         app.push("latest")
+                        app.push("${env.BUILD_NUMBER}")
                     }
                 }
             }
