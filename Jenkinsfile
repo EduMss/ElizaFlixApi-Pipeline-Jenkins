@@ -7,36 +7,41 @@ pipeline {
             }
         }
 
-        // stage('Build') {
-        //     steps {
-        //         bat 'dotnet build --configuration Release'
-        //     }
-        // }
+        stage('Build-Windows') {
+            steps {
+                bat 'dotnet build --configuration Release'
+            }
+        }
 
-        // stage('Teste') {
-        //     steps {
-        //         bat 'dotnet test'
-        //     }
-        // }
+        stage('Teste') {
+            steps {
+                bat 'dotnet test'
+            }
+        }
 
-        // stage('Clear Debug Project'){
-        //     steps {
-        //         bat 'dotnet clean --configuration Debug'
-        //         // bat 'rd /s /q bin\\Debug'
-        //     }
-        // }
+        stage('Clear Debug Project'){
+            steps {
+                bat 'dotnet clean --configuration Debug'
+                // bat 'rd /s /q bin\\Debug'
+            }
+        }
+
+
+        //Variaveis de ambiente Jenkins:
+        // env.JOB_NAME: Nome do job Jenkins.
+        // env.BUILD_ID: Um ID exclusivo para o build atual.
+        // env.BUILD_TAG: Uma tag legível que combina o nome do job e o número do build.
+        // env.WORKSPACE: Diretório de trabalho atual do job.
+        // env.BUILD_NUMBER: Retorna o numero da Buildo do Jenkins
 
         stage('Docker Login') {
+            //Plugins Instalados:
+            //Docker Pipeline Plugin
+            //Docker Commons Plugin
+
+            //DOCKER_CREDENTIALS_ID -> fui uma credencial criada no jenkins com as credenciais do docker hub.
             steps {
                 script {
-                    // docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-                    //     // Esse bloco realiza o login automaticamente
-                    //     // e executa qualquer comando Docker dentro desse bloco com o login ativo.
-                    //     // Você pode incluir outros passos aqui, como build, push, etc.
-                    //     bat 'docker build -t edumss/elizaflixapi:latest .'
-                    //     bat 'docker push edumss/elizaflixapi:latest'
-                    // }
-
                     withCredentials([usernamePassword(credentialsId: 'DOCKER_CREDENTIALS_ID', passwordVariable: 'password', usernameVariable: 'username')]){
                         bat '''
                             echo "${password} | docker login -u ${username} --password-stdin"
@@ -48,22 +53,5 @@ pipeline {
                 }
             }
         }
-        // stage('Build Image') {
-        //     steps {
-        //         script {
-        //             // Comando para buildar a imagem
-        //             // sh 'docker build -t edumss/elizaflixapi .'
-        //             bat 'docker build -t edumss/elizaflixapi:latest .'// -t edumss/elizaflixapi: .'
-        //         }
-        //     }
-        // }
-        // stage('Push Image') {
-        //     steps {
-        //         script {
-        //             // Comando para fazer o push da imagem para o Docker Registry
-        //             bat 'docker push edumss/elizaflixapi:latest'
-        //         }
-        //     }
-        // }
     }
 }
