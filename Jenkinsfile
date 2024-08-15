@@ -25,5 +25,34 @@ pipeline {
                 bat 'rd /s /q bin\\Debug'
             }
         }
+
+        stage('Docker Login') {
+            steps {
+                script {
+                    docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
+                        // Esse bloco realiza o login automaticamente
+                        // e executa qualquer comando Docker dentro desse bloco com o login ativo.
+                        // Você pode incluir outros passos aqui, como build, push, etc.
+                    }
+                }
+            }
+        }
+        stage('Build Image') {
+            steps {
+                script {
+                    // Comando para buildar a imagem
+                    // sh 'docker build -t edumss/elizaflixapi .'
+                    bat 'docker build -t edumss/elizaflixapi:latest .'// -t edumss/elizaflixapi: .'
+                }
+            }
+        }
+        stage('Push Image') {
+            steps {
+                script {
+                    // Comando para fazer o push da imagem para o Docker Registry
+                    bat 'docker push edumss/elizaflixapi:latest'
+                }
+            }
+        }
     }
 }
