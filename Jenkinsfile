@@ -7,34 +7,42 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                bat 'dotnet build --configuration Release'
-            }
-        }
+        // stage('Build') {
+        //     steps {
+        //         bat 'dotnet build --configuration Release'
+        //     }
+        // }
 
-        stage('Teste') {
-            steps {
-                bat 'dotnet test'
-            }
-        }
+        // stage('Teste') {
+        //     steps {
+        //         bat 'dotnet test'
+        //     }
+        // }
 
-        stage('Clear Debug Project'){
-            steps {
-                bat 'dotnet clean --configuration Debug'
-                // bat 'rd /s /q bin\\Debug'
-            }
-        }
+        // stage('Clear Debug Project'){
+        //     steps {
+        //         bat 'dotnet clean --configuration Debug'
+        //         // bat 'rd /s /q bin\\Debug'
+        //     }
+        // }
 
         stage('Docker Login') {
             steps {
                 script {
-                    docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-                        // Esse bloco realiza o login automaticamente
-                        // e executa qualquer comando Docker dentro desse bloco com o login ativo.
-                        // Você pode incluir outros passos aqui, como build, push, etc.
-                        bat 'docker build -t edumss/elizaflixapi:latest .'
-                        bat 'docker push edumss/elizaflixapi:latest'
+                    // docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
+                    //     // Esse bloco realiza o login automaticamente
+                    //     // e executa qualquer comando Docker dentro desse bloco com o login ativo.
+                    //     // Você pode incluir outros passos aqui, como build, push, etc.
+                    //     bat 'docker build -t edumss/elizaflixapi:latest .'
+                    //     bat 'docker push edumss/elizaflixapi:latest'
+                    // }
+
+                    withCredentials([usernamePassword(credentialsId: 'DOCKER_CREDENTIALS_ID', passwordVariable: 'password', usernameVariable: 'username')]){
+                        bat '''
+                            echo "${password} | docker login -u ${username} --password-stdin"
+                        '''
+                        def app = docker.build("edumss/elizaflixapi")
+                        app.push("latest")
                     }
                 }
             }
