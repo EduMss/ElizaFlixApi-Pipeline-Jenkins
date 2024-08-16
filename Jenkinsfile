@@ -57,9 +57,15 @@ pipeline {
 
         stage('SonarQube Scan') {
             steps {
-                withSonarQubeEnv(installationName: 'SonarQubeServer') {
-                    bat 'dotnet sonarscanner'
-                }
+                // withSonarQubeEnv(installationName: 'SonarQubeServer') {
+                //     bat 'dotnet sonarscanner'
+                // }
+                withCredentials([string(credentialsId: 'SONARQUBE_TOKEN', variable: 'secret')]){
+                        echo "Token: ${secret}"
+                        bat 'dotnet sonarscanner begin /k:"ElizaFlixAPI" /d:sonar.host.url="http://192.168.0.165:9000/"  /d:sonar.login="${secret}"'
+                        bat 'dotnet build'
+                        bat 'dotnet sonarscanner end /d:sonar.login="${secret}"'
+                    }
             }
         }
     }
