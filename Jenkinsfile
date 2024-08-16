@@ -7,24 +7,24 @@ pipeline {
             }
         }
 
-        stage('Build-Windows') {
-            steps {
-                bat 'dotnet build --configuration Release'
-            }
-        }
+        // stage('Build-Windows') {
+        //     steps {
+        //         bat 'dotnet build --configuration Release'
+        //     }
+        // }
 
-        stage('Teste') {
-            steps {
-                bat 'dotnet test'
-            }
-        }
+        // stage('Teste') {
+        //     steps {
+        //         bat 'dotnet test'
+        //     }
+        // }
 
-        stage('Clear Debug Project'){
-            steps {
-                bat 'dotnet clean --configuration Debug'
-                // bat 'rd /s /q bin\\Debug'
-            }
-        }
+        // stage('Clear Debug Project'){
+        //     steps {
+        //         bat 'dotnet clean --configuration Debug'
+        //         // bat 'rd /s /q bin\\Debug'
+        //     }
+        // }
 
 
         //Variaveis de ambiente Jenkins:
@@ -34,22 +34,31 @@ pipeline {
         // env.WORKSPACE: Diretório de trabalho atual do job.
         // env.BUILD_NUMBER: Retorna o numero da Buildo do Jenkins
 
-        stage('Docker Login') {
-            //Plugins Instalados:
-            //Docker Pipeline Plugin
-            //Docker Commons Plugin
+        // stage('Docker Login') {
+        //     //Plugins Instalados:
+        //     //Docker Pipeline Plugin
+        //     //Docker Commons Plugin
 
-            //DOCKER_CREDENTIALS_ID -> fui uma credencial criada no jenkins com as credenciais do docker hub.
+        //     //DOCKER_CREDENTIALS_ID -> fui uma credencial criada no jenkins com as credenciais do docker hub.
+        //     steps {
+        //         script {
+        //             withCredentials([usernamePassword(credentialsId: 'DOCKER_CREDENTIALS_ID', passwordVariable: 'password', usernameVariable: 'username')]){
+        //                 bat '''
+        //                     echo "${password} | docker login -u ${username} --password-stdin"
+        //                 '''
+        //                 def app = docker.build("edumss/elizaflixapi")
+        //                 app.push("latest")
+        //                 app.push("${env.BUILD_NUMBER}")
+        //             }
+        //         }
+        //     }
+        // }
+
+
+        stage('SonarQube Scan') {
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'DOCKER_CREDENTIALS_ID', passwordVariable: 'password', usernameVariable: 'username')]){
-                        bat '''
-                            echo "${password} | docker login -u ${username} --password-stdin"
-                        '''
-                        def app = docker.build("edumss/elizaflixapi")
-                        app.push("latest")
-                        app.push("${env.BUILD_NUMBER}")
-                    }
+                withSonarQubeEnv(installationName: 'SonarQubeServer') {
+                    
                 }
             }
         }
