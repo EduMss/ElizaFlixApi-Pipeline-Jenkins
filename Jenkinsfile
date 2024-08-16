@@ -58,7 +58,7 @@ pipeline {
         stage('SonarQube Scan') {
             steps {
                 withSonarQubeEnv(installationName: 'SonarQubeServer') {
-                    
+                    bat 'sonar-scanner'
                 }
             }
         }
